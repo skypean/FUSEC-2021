@@ -46,14 +46,6 @@ def solve():
             flag = output.decode()[output.index(b'FUSec{'):output.index(b'}')+1]
             print(flag)
             break
-    
-
-def test():
-    from hashlib import sha512
-    known_msg = 'product=FLAG&price=99999&time=1633744784.98'
-    secret_msg = '3H0XfrdRDl7ceGBM2kc0e'
-    hashed_msg = '1119731cf1ff1adc30c90222a05cb96c5022613d01ad49c297b3e408dd542b3a'
-    append_msg = '&price=0'
 
 if __name__=="__main__":
     solve()
