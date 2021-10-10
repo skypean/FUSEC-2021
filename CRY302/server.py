@@ -31,7 +31,6 @@ class RequestHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
         self.signkey = os.urandom(random.randint(8, 32))
-        # self.signkey = os.urandom(random.randint(8, 8))
         print(len(self.signkey))
         self.money = random.randint(1, 2000)
         try:
@@ -107,16 +106,11 @@ class RequestHandler(socketserver.StreamRequestHandler):
         pos = payment.rfind(b'&sign=')
         if pos == -1:
             self.request.sendall(b'Invalid order\n')
-            self.request.sendall(b'No sign\n')
             return
 
         signature = payment[pos + 6:]
         if sha512(self.signkey+payment[:pos]).hexdigest().encode() != signature:
             self.request.sendall(b'Invalid order\n')
-            self.request.sendall(b'sign != signchk\n')
-            self.request.sendall(signature + b'\n')
-            self.request.sendall(sha512(self.signkey+payment[:pos]).hexdigest().encode() + b'\n')
-            self.request.sendall(self.signkey+payment[:pos] + b'\n')
             return
 
         m = self.parse_qsl(payment[:pos])
@@ -125,7 +119,6 @@ class RequestHandler(socketserver.StreamRequestHandler):
             price = int(m[b'price'])
         except (KeyError, ValueError, IndexError):
             self.request.sendall(b'Invalid order\n')
-            self.request.sendall(b'parse error\n')
             return
 
         if price > self.money:
